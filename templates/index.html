@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BigQuery Release Pulse</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="glow-container">
+        <div class="glow-sphere glow-sphere-1"></div>
+        <div class="glow-sphere glow-sphere-2"></div>
+    </div>
+
+    <header class="app-header">
+        <div class="header-content">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-square-poll-vertical"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>BigQuery Release Pulse</h1>
+                    <p>Track updates, parse releases, and share on X</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div id="last-updated-container" class="last-updated">
+                    <span class="pulse-indicator"></span>
+                    <span id="last-updated-time">Checking feed...</span>
+                </div>
+                <button id="refresh-btn" class="btn btn-primary" title="Refresh Release Notes">
+                    <i id="refresh-icon" class="fa-solid fa-rotate-right"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Search and Filter Bar -->
+        <section class="controls-panel">
+            <div class="search-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="Search updates (e.g. Gemini, JSON, export)..." autocomplete="off">
+                <button id="clear-search" class="clear-btn" style="display: none;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="filters-wrapper">
+                <span class="filter-label">Filter:</span>
+                <div class="filter-tags" id="category-filters">
+                    <button class="filter-tag active" data-category="ALL">All Updates</button>
+                    <button class="filter-tag" data-category="FEATURE">Features</button>
+                    <button class="filter-tag" data-category="ISSUE">Issues</button>
+                    <button class="filter-tag" data-category="CHANGED">Changes</button>
+                    <button class="filter-tag" data-category="DEPRECATED">Deprecated</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loader State -->
+        <div id="loader" class="loader-container">
+            <div class="spinner"></div>
+            <p>Fetching the latest BigQuery release notes...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-card" class="error-container" style="display: none;">
+            <i class="fa-solid fa-triangle-exclamation error-icon"></i>
+            <h3>Unable to fetch updates</h3>
+            <p id="error-message">Something went wrong while connecting to the release feed.</p>
+            <button id="retry-btn" class="btn btn-secondary">Try Again</button>
+        </div>
+
+        <!-- Release Content List -->
+        <section id="releases-timeline" class="timeline-container">
+            <!-- Dynamically populated via JS -->
+        </section>
+    </main>
+
+    <!-- Interactive Tweet Drawer -->
+    <div id="tweet-drawer" class="tweet-drawer-overlay">
+        <div class="tweet-drawer-content">
+            <div class="drawer-header">
+                <div class="drawer-title">
+                    <i class="fa-brands fa-x-twitter"></i>
+                    <h3>Compose Release Tweet</h3>
+                </div>
+                <button id="close-drawer" class="close-drawer-btn" title="Deselect update">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="drawer-body">
+                <div class="tweet-card-preview">
+                    <div class="preview-badge" id="preview-category-badge">Feature</div>
+                    <div class="preview-date" id="preview-update-date">June 15, 2026</div>
+                    <div class="preview-text" id="preview-update-text">
+                        Use Gemini Cloud Assist to analyze your SQL queries...
+                    </div>
+                </div>
+
+                <div class="tweet-editor-section">
+                    <label for="tweet-textarea">Customize your post:</label>
+                    <div class="textarea-wrapper">
+                        <textarea id="tweet-textarea" rows="4" placeholder="Craft your perfect tweet..."></textarea>
+                    </div>
+                    <div class="tweet-metadata">
+                        <span class="char-counter" id="char-counter">0 / 280</span>
+                        <span class="char-warning" id="char-warning" style="display: none;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Over the 280-character limit
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="drawer-footer">
+                <button id="deselect-all-btn" class="btn btn-ghost">Cancel</button>
+                <button id="tweet-submit-btn" class="btn btn-tweet">
+                    <i class="fa-brands fa-x-twitter"></i>
+                    <span>Post to X</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>BigQuery Release Pulse &bull; Powered by Google Cloud RSS Feed &bull; Built with Flask</p>
+    </footer>
+
+    <!-- Main JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
